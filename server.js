@@ -5,39 +5,34 @@ var logger = require("morgan");
 var mongoose = require("mongoose");
 var path = require("path");
 
-// Requiring Note and Article models
 var Note = require("./models/Note.js");
 var Article = require("./models/Article.js");
 
-// Scraping tools
 var request = require("request");
 var axios = require("axios");
 var cheerio = require("cheerio");
 
-// Set mongoose to leverage built in JavaScript ES6 Promises
+
+var PORT = process.env.PORT || 8080;
+
 mongoose.Promise = Promise;
 
+var MONGODB_URI = process.env.MONGODB_URI ||  "mongodb://localhost/mongo_fernzDB";
+mongoose.connect(MONGODB_URI, { useMongoClient: true});
 
-if(process.env.MONGODB_URI) {
-  mongoose.connect(process.env.MONGODB_URI, {
-      useMongoClient: true
-  });
-} else {
-  mongoose.connect("mongodb://localhost/sessionFernzDB", {
-      useMongoClient: true
-  });
-}
+var db = mongoose.connection;
+db.on('error', function(error) {
+  console.log("Mongoose error:", error)});
 
-
-// mongoose.connect(MONGODB_URI, {
-//   useMongoClient: true
-// });
-// mongoose.connect("mongodb://localhost/ct_scraperMongoose", {
-//   useMongoClient: true
-// });
-
-//Define port
-var port = process.env.MONGODB_URI || 3000;
+// if(process.env.MONGODB_URI) {
+//   mongoose.connect(process.env.MONGODB_URI, {
+//       useMongoClient: true
+//   });
+// } else {
+//   mongoose.connect("mongodb://localhost/sessionFernzDB", {
+//       useMongoClient: true
+//   });
+// }
 
 // Initialize Express
 var app = express();
@@ -213,6 +208,6 @@ app.delete("/notes/delete/:note_id/:article_id", function(req, res) {
 });
 
 // Listen on port
-app.listen(port, function() {
-  console.log("App running on port " + port);
+app.listen(PORT, function() {
+  console.log("App running on port " + PORT);
 });
