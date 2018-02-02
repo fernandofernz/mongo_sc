@@ -16,13 +16,25 @@ var cheerio = require("cheerio");
 
 // Set mongoose to leverage built in JavaScript ES6 Promises
 mongoose.Promise = Promise;
-mongoose.connect(MONGODB_URI, {
-  useMongoClient: true
-});
+
+
+if(process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI, {
+      useMongoClient: true
+  });
+} else {
+  mongoose.connect("mongodb://localhost/sessionFernzDB", {
+      useMongoClient: true
+  });
+}
+
+
+// mongoose.connect(MONGODB_URI, {
+//   useMongoClient: true
+// });
 // mongoose.connect("mongodb://localhost/ct_scraperMongoose", {
 //   useMongoClient: true
 // });
-
 
 //Define port
 var port = process.env.MONGODB_URI || 3000;
